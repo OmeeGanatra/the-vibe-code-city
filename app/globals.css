@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-bg: #0d0400;
+  --color-bg-raised: #1a0a04;
+  --color-bg-card: #201008;
+  --color-coral: #ff6b35;
+  --color-coral-light: #ff8c5a;
+  --color-coral-dark: #cc4420;
+  --color-border: #2a1a0f;
+  --color-border-light: #3a2a1f;
+  --color-dim: #5a3a2a;
+  --color-muted: #8a5a3a;
+  --color-warm: #c09878;
+  --font-pixel: "Silkscreen", monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #0d0400;
+  color: #c09878;
+  font-family: "Silkscreen", monospace;
+  overflow: hidden;
 }
+
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.blink-dot {
+  animation: blink-dot 1s steps(1) infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pixel-shadow {
+  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.5);
+}
+.pixel-shadow-coral {
+  box-shadow: 4px 4px 0 0 #cc4420;
+}
+.btn-press {
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+.btn-press:hover {
+  transform: translate(2px, 2px);
+}
+.btn-press:hover.pixel-shadow-coral {
+  box-shadow: 2px 2px 0 0 #cc4420;
+}
+.btn-press:active {
+  transform: translate(4px, 4px);
+  box-shadow: none !important;
+}
+
+::selection {
+  background: rgba(255, 107, 53, 0.3);
+  color: #c09878;
+}
+
+.scrollbar-thin::-webkit-scrollbar { width: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #2a1a0f; border-radius: 2px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #3a2a1f; }

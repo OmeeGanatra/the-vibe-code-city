@@ -1,5 +1,5 @@
 {
-  "name": "claude-city",
+  "name": "the-vibe-code-city",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,9 +8,22 @@
     "start": "next start"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@react-three/postprocessing": "^3.0.4",
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "@types/howler": "^2.2.12",
+    "@types/three": "^0.183.1",
+    "firebase": "^12.10.0",
+    "howler": "^2.2.4",
     "next": "16.1.6",
+    "postprocessing": "^6.38.3",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "stripe": "^20.4.0",
+    "three": "^0.183.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
