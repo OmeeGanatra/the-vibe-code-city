@@ -243,9 +243,13 @@ export default function Home() {
       {/* Hover tooltip */}
       {hoveredBuilding && !selectedBuilding && !droneMode && (
         <HoverTooltip
-          name={hoveredBuilding.building.name}
+          building={hoveredBuilding.building}
           x={hoveredBuilding.x}
           y={hoveredBuilding.y}
+          isHire={(() => {
+            const login = extractGithubLogin(hoveredBuilding.building.project.githubUrl);
+            return login ? hireMap.has(login) : false;
+          })()}
         />
       )}
 
