@@ -5,6 +5,7 @@ import { getKudosForUser, getKudosCount } from "@/lib/services/kudos";
 import { syncUser } from "@/lib/services/github";
 import Link from "next/link";
 import type { Metadata } from "next";
+import allProjects from "@/data/projects.json";
 
 // ── SYSTEM 3 & 13: Developer Profile with ISR ──────────────
 
@@ -72,6 +73,11 @@ export default async function UserProfilePage({ params }: Props) {
   ]);
 
   const building = generateBuildingParams(user);
+
+  const vibeProjects = (allProjects as { id: string; name: string; description: string; url: string; githubUrl?: string; category: string; upvotes: number }[]).filter((p) => {
+    const owner = p.githubUrl?.match(/github\.com\/([^/?#]+)/i)?.[1]?.toLowerCase();
+    return owner === username.toLowerCase();
+  });
 
   const rarityColors: Record<string, string> = {
     common: "#8a5a3a",
@@ -265,6 +271,37 @@ export default async function UserProfilePage({ params }: Props) {
                     {repo.language && <span>{repo.language}</span>}
                     <span>★ {repo.stars}</span>
                   </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Vibe Projects in the City */}
+        {vibeProjects.length > 0 && (
+          <div className="mt-6">
+            <h2 className="mb-3 font-pixel text-xs uppercase text-[#5a3a2a]">
+              In the City ({vibeProjects.length})
+            </h2>
+            <div className="flex flex-col gap-2">
+              {vibeProjects.map((p) => (
+                <a
+                  key={p.id}
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block border border-[#2a1a0f] bg-[#1a0a04] p-3 transition-colors hover:border-[#ffd166]"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-pixel text-xs text-[#ffd166]">{p.name}</div>
+                    {p.upvotes > 0 && (
+                      <span className="font-pixel text-[9px] text-[#ff8c5a]">▲ {p.upvotes.toLocaleString()}</span>
+                    )}
+                  </div>
+                  <p className="mt-1 font-pixel text-[9px] leading-relaxed text-[#8a5a3a] line-clamp-2">
+                    {p.description}
+                  </p>
+                  <div className="mt-1 font-pixel text-[9px] text-[#3a2a1f]">{p.category}</div>
                 </a>
               ))}
             </div>
