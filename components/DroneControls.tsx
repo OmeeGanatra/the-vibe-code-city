@@ -17,6 +17,7 @@ const MAX_TILT = 0.3;
 interface DroneControlsProps {
   enabled: boolean;
   onExit: () => void;
+  onMove?: (x: number, y: number, z: number, yaw: number, bank: number) => void;
 }
 
 // ─── Cyberpunk Drone Mesh ─────────────────────────────────────
@@ -195,7 +196,7 @@ function DroneMesh({ visible }: { visible: boolean }) {
 }
 
 // ─── Main Controller ──────────────────────────────────────────
-export default function DroneControls({ enabled, onExit }: DroneControlsProps) {
+export default function DroneControls({ enabled, onExit, onMove }: DroneControlsProps) {
   const { camera, gl } = useThree();
   const keys = useRef<Set<string>>(new Set());
   const yaw = useRef(0);
@@ -341,6 +342,17 @@ export default function DroneControls({ enabled, onExit }: DroneControlsProps) {
       dronePos.current.y + bob,
       dronePos.current.z
     );
+
+    // Broadcast position to multiplayer server (rate-limited inside the hook)
+    if (onMove) {
+      onMove(
+        dronePos.current.x,
+        dronePos.current.y + bob,
+        dronePos.current.z,
+        yaw.current,
+        tilt.current.z
+      );
+    }
 
     // Drone rotation: yaw + tilt
     const droneEuler = new THREE.Euler(

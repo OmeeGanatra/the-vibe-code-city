@@ -7,6 +7,8 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import CityScene from "./CityScene";
 import DroneControls from "./DroneControls";
+import RemoteDrones from "./RemoteDrones";
+import { usePartyFly } from "@/lib/multiplayer";
 import type { CityBuilding } from "@/lib/projects";
 
 // ─── Sky Dome ────────────────────────────────────────────────
@@ -90,6 +92,7 @@ interface InnerProps {
 function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, onClick, onReady }: InnerProps) {
   const controlsRef = useRef<{ target: THREE.Vector3 } | null>(null);
   const readyCalled = useRef(false);
+  const { pilots, sendMove } = usePartyFly(droneMode);
 
   useEffect(() => {
     if (!readyCalled.current) {
@@ -143,7 +146,9 @@ function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, o
         <CameraFocus target={focusTarget} controlsRef={controlsRef as never} />
       )}
 
-      <DroneControls enabled={droneMode} onExit={onDroneExit} />
+      <DroneControls enabled={droneMode} onExit={onDroneExit} onMove={sendMove} />
+
+      {droneMode && <RemoteDrones pilots={pilots} />}
 
       <EffectComposer>
         <Bloom

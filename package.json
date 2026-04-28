@@ -19,6 +19,7 @@
     "firebase": "^12.10.0",
     "howler": "^2.2.4",
     "next": "16.1.6",
+    "partysocket": "^1.1.18",
     "postprocessing": "^6.38.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -30,6 +31,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "partykit": "^0.0.115",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

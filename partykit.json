@@ -1,0 +1,5 @@
+{
+  "name": "vibe-code-city",
+  "main": "party/fly.ts",
+  "compatibilityDate": "2025-06-01"
+}
