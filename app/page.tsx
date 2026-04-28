@@ -9,6 +9,7 @@ import ProjectPanel from "@/components/ProjectPanel";
 import HoverTooltip from "@/components/HoverTooltip";
 import LoadingScreen from "@/components/LoadingScreen";
 import CategoryLegend from "@/components/CategoryLegend";
+import SignInButton from "@/components/SignInButton";
 import Link from "next/link";
 
 const CityCanvas = dynamic(() => import("@/components/CityCanvas"), {
@@ -211,6 +212,7 @@ export default function Home() {
           className="fixed right-4 top-4 z-30 flex gap-2"
           style={{ animation: "fade-in 0.5s ease-out 0.1s both" }}
         >
+          <SignInButton />
           <Link
             href="/hire"
             className="btn-press inline-block border border-[#7fff6b] bg-[#0d1f0d] px-4 py-2 font-pixel text-xs text-[#7fff6b] transition-colors hover:bg-[#7fff6b] hover:text-[#0d0400]"

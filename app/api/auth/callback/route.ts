@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createServerSupabase, createServiceSupabase } from "@/lib/supabase/server";
+import { syncUser } from "@/lib/services/github";
 
 // GET /api/auth/callback — GitHub OAuth callback
 export async function GET(req: NextRequest) {
@@ -17,6 +18,25 @@ export async function GET(req: NextRequest) {
   if (error) {
     console.error("Auth callback error:", error);
     return NextResponse.redirect(new URL("/?error=auth_failed", req.url));
+  }
+
+  // Sync and claim the user's city profile, then land on their building
+  const { data: { user } } = await supabase.auth.getUser();
+  const username = user?.user_metadata?.user_name as string | undefined;
+
+  if (username) {
+    try {
+      await syncUser(username);
+      const service = createServiceSupabase();
+      await service
+        .from("users")
+        .update({ claimed: true, claimed_at: new Date().toISOString() })
+        .eq("github_login", username.toLowerCase())
+        .is("claimed_at", null);
+      return NextResponse.redirect(new URL(`/user/${username}`, req.url));
+    } catch {
+      // Fall through to next param
+    }
   }
 
   return NextResponse.redirect(new URL(next, req.url));
