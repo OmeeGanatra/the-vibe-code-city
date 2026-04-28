@@ -97,6 +97,60 @@ export interface Database {
         };
         Relationships: [];
       };
+      jobs: {
+        Row: {
+          id: string;
+          company_name: string;
+          poster_email: string;
+          title: string;
+          description: string;
+          contact_url: string;
+          budget_min_usd: number | null;
+          budget_max_usd: number | null;
+          budget_type: "project" | "hourly" | "salary";
+          remote: boolean;
+          location: string | null;
+          skills: string[];
+          status: "active" | "filled" | "closed";
+          created_at: string;
+          expires_at: string;
+        };
+        Insert: {
+          id?: string;
+          company_name: string;
+          poster_email: string;
+          title: string;
+          description: string;
+          contact_url: string;
+          budget_min_usd?: number | null;
+          budget_max_usd?: number | null;
+          budget_type?: "project" | "hourly" | "salary";
+          remote?: boolean;
+          location?: string | null;
+          skills?: string[];
+          status?: "active" | "filled" | "closed";
+          created_at?: string;
+          expires_at?: string;
+        };
+        Update: {
+          id?: string;
+          company_name?: string;
+          poster_email?: string;
+          title?: string;
+          description?: string;
+          contact_url?: string;
+          budget_min_usd?: number | null;
+          budget_max_usd?: number | null;
+          budget_type?: "project" | "hourly" | "salary";
+          remote?: boolean;
+          location?: string | null;
+          skills?: string[];
+          status?: "active" | "filled" | "closed";
+          created_at?: string;
+          expires_at?: string;
+        };
+        Relationships: [];
+      };
       repositories: {
         Row: {
           id: string;
