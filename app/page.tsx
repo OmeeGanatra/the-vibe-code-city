@@ -17,6 +17,19 @@ const CityCanvas = dynamic(() => import("@/components/CityCanvas"), {
 
 const buildings = generateCityLayout(projects as never);
 
+interface HireSummary {
+  github_login: string;
+  hire_headline: string | null;
+  hire_rate_usd_hourly: number | null;
+  hire_contact_url: string | null;
+}
+
+function extractGithubLogin(url: string | undefined): string | null {
+  if (!url) return null;
+  const m = url.match(/github\.com\/([^/?#]+)/i);
+  return m ? m[1].toLowerCase() : null;
+}
+
 export default function Home() {
   const [selectedBuilding, setSelectedBuilding] = useState<CityBuilding | null>(null);
   const [hoveredBuilding, setHoveredBuilding] = useState<{
@@ -27,6 +40,21 @@ export default function Home() {
   const [focusTarget, setFocusTarget] = useState<[number, number, number] | null>(null);
   const [cityReady, setCityReady] = useState(false);
   const [droneMode, setDroneMode] = useState(false);
+  const [hireMap, setHireMap] = useState<Map<string, HireSummary>>(new Map());
+  const [pilotCount, setPilotCount] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/hire")
+      .then((r) => r.json())
+      .then((d: { users?: HireSummary[] }) => {
+        const map = new Map<string, HireSummary>();
+        for (const u of d.users ?? []) {
+          map.set(u.github_login.toLowerCase(), u);
+        }
+        setHireMap(map);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleDroneToggle = useCallback(() => {
     setDroneMode((prev) => !prev);
@@ -74,6 +102,7 @@ export default function Home() {
           onHover={handleHover}
           onClick={handleClick}
           onReady={() => setCityReady(true)}
+          onPilotsChange={setPilotCount}
         />
       </div>
 
@@ -129,8 +158,15 @@ export default function Home() {
           className="pointer-events-none fixed bottom-4 left-1/2 z-30 -translate-x-1/2"
         >
           <div className="border border-[#ff6b35]/30 bg-[#0d0400]/80 px-6 py-3 backdrop-blur-sm">
-            <div className="mb-1 text-center font-pixel text-[10px] tracking-widest text-[#ff6b35]">
-              DRONE MODE
+            <div className="mb-1 flex items-center justify-center gap-3">
+              <span className="font-pixel text-[10px] tracking-widest text-[#ff6b35]">
+                DRONE MODE
+              </span>
+              {pilotCount > 0 && (
+                <span className="border border-[#7fff6b]/40 px-2 py-0.5 font-pixel text-[9px] text-[#7fff6b]">
+                  ● {pilotCount} other pilot{pilotCount === 1 ? "" : "s"} flying
+                </span>
+              )}
             </div>
             <div className="flex gap-4 font-pixel text-[9px] text-[#8a5a3a]">
               <span>WASD move</span>
@@ -157,6 +193,13 @@ export default function Home() {
           className="fixed right-4 top-4 z-30 flex gap-2"
           style={{ animation: "fade-in 0.5s ease-out 0.1s both" }}
         >
+          <Link
+            href="/hire"
+            className="btn-press inline-block border border-[#7fff6b] bg-[#0d1f0d] px-4 py-2 font-pixel text-xs text-[#7fff6b] transition-colors hover:bg-[#7fff6b] hover:text-[#0d0400]"
+            style={{ boxShadow: "0 4px 0 #2a4a2a" }}
+          >
+            ● HIRE A CODER
+          </Link>
           <button
             onClick={handleDroneToggle}
             className="btn-press pixel-shadow-coral bg-[#1a0a04] border border-[#ff6b35] px-4 py-2 font-pixel text-xs text-[#ff6b35] hover:bg-[#ff6b35] hover:text-[#0d0400] transition-colors"
@@ -182,7 +225,14 @@ export default function Home() {
       )}
 
       {/* Project panel */}
-      <ProjectPanel building={selectedBuilding} onClose={handlePanelClose} />
+      <ProjectPanel
+        building={selectedBuilding}
+        onClose={handlePanelClose}
+        hireSummary={(() => {
+          const login = extractGithubLogin(selectedBuilding?.project.githubUrl);
+          return login ? hireMap.get(login) ?? null : null;
+        })()}
+      />
     </main>
   );
 }

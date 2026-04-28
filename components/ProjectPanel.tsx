@@ -4,9 +4,17 @@ import { useEffect, useCallback } from "react";
 import type { CityBuilding } from "@/lib/projects";
 import { CATEGORY_COLORS } from "@/lib/projects";
 
+interface HireSummary {
+  github_login: string;
+  hire_headline: string | null;
+  hire_rate_usd_hourly: number | null;
+  hire_contact_url: string | null;
+}
+
 interface ProjectPanelProps {
   building: CityBuilding | null;
   onClose: () => void;
+  hireSummary?: HireSummary | null;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -19,7 +27,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   other: "Other",
 };
 
-export default function ProjectPanel({ building, onClose }: ProjectPanelProps) {
+export default function ProjectPanel({ building, onClose, hireSummary }: ProjectPanelProps) {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -126,6 +134,35 @@ export default function ProjectPanel({ building, onClose }: ProjectPanelProps) {
               })}
             </div>
           </div>
+
+          {/* Hire CTA — shown when builder is for_hire */}
+          {hireSummary && hireSummary.hire_contact_url && (
+            <div className="border-t border-[#2a4a2a] bg-gradient-to-br from-[#0d1f0d] to-[#1a0a04] p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="font-pixel text-[9px] uppercase tracking-widest text-[#7fff6b]">
+                  ● Builder for hire
+                </span>
+                {hireSummary.hire_rate_usd_hourly && (
+                  <span className="font-pixel text-xs text-[#7fff6b]">
+                    ${hireSummary.hire_rate_usd_hourly}
+                    <span className="text-[8px] text-[#5a8a5a]">/hr</span>
+                  </span>
+                )}
+              </div>
+              {hireSummary.hire_headline && (
+                <p className="mb-3 font-pixel text-[10px] leading-snug text-[#a0c0a0]">
+                  {hireSummary.hire_headline}
+                </p>
+              )}
+              <a
+                href={hireSummary.hire_contact_url}
+                className="block bg-[#7fff6b] px-4 py-2 text-center font-pixel text-xs text-[#0d0400] transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-[#a0ff80]"
+                style={{ boxShadow: "3px 3px 0 #2a4a2a" }}
+              >
+                → HIRE {hireSummary.github_login.toUpperCase()}
+              </a>
+            </div>
+          )}
 
           {/* Footer links */}
           <div className="border-t border-[#2a1a0f] p-4">

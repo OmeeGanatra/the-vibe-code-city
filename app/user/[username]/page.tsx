@@ -102,7 +102,14 @@ export default async function UserProfilePage({ params }: Props) {
             />
           )}
           <div className="flex-1">
-            <h1 className="font-pixel text-xl text-[#ff6b35]">{user.github_login}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="font-pixel text-xl text-[#ff6b35]">{user.github_login}</h1>
+              {user.for_hire && (
+                <span className="animate-pulse border border-[#7fff6b] bg-[#0d1f0d] px-2 py-0.5 font-pixel text-[9px] text-[#7fff6b]">
+                  ● FOR HIRE
+                </span>
+              )}
+            </div>
             {user.name && (
               <p className="font-pixel text-xs text-[#8a5a3a]">{user.name}</p>
             )}
@@ -118,6 +125,61 @@ export default async function UserProfilePage({ params }: Props) {
             )}
           </div>
         </div>
+
+        {/* FOR HIRE Panel */}
+        {user.for_hire && (
+          <div className="mt-6 border-2 border-[#7fff6b] bg-gradient-to-br from-[#0d1f0d] to-[#1a0a04] p-5">
+            <div className="mb-3 flex items-baseline justify-between">
+              <span className="font-pixel text-[10px] uppercase tracking-widest text-[#7fff6b]">
+                ● Available for hire
+              </span>
+              {user.hire_rate_usd_hourly && (
+                <span className="font-pixel text-lg text-[#7fff6b]">
+                  ${user.hire_rate_usd_hourly}
+                  <span className="text-[10px] text-[#5a8a5a]">/hr</span>
+                </span>
+              )}
+            </div>
+            {user.hire_headline && (
+              <h2 className="mb-2 font-pixel text-base leading-snug text-[#ff8c5a]">
+                {user.hire_headline}
+              </h2>
+            )}
+            {user.hire_bio && (
+              <p className="mb-3 font-pixel text-[10px] leading-relaxed text-[#c09878]">
+                {user.hire_bio}
+              </p>
+            )}
+            {user.hire_skills && user.hire_skills.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-1">
+                {user.hire_skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="border border-[#2a4a2a] bg-[#0d1408] px-2 py-0.5 font-pixel text-[9px] text-[#a0c0a0]"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              {user.hire_availability && (
+                <span className="font-pixel text-[9px] text-[#5a8a5a]">
+                  {user.hire_availability}
+                </span>
+              )}
+              {user.hire_contact_url && (
+                <a
+                  href={user.hire_contact_url}
+                  className="btn-press inline-block bg-[#7fff6b] px-5 py-2 font-pixel text-xs text-[#0d0400] hover:bg-[#a0ff80]"
+                  style={{ boxShadow: "0 4px 0 #2a4a2a" }}
+                >
+                  HIRE {user.github_login.toUpperCase()} →
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">

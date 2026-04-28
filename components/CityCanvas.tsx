@@ -87,9 +87,10 @@ interface InnerProps {
   onHover: (building: CityBuilding | null, x: number, y: number) => void;
   onClick: (building: CityBuilding) => void;
   onReady: () => void;
+  onPilotsChange?: (count: number) => void;
 }
 
-function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, onClick, onReady }: InnerProps) {
+function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, onClick, onReady, onPilotsChange }: InnerProps) {
   const controlsRef = useRef<{ target: THREE.Vector3 } | null>(null);
   const readyCalled = useRef(false);
   const { pilots, sendMove } = usePartyFly(droneMode);
@@ -100,6 +101,12 @@ function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, o
       setTimeout(onReady, 400);
     }
   }, [onReady]);
+
+  // Notify parent of pilot count changes (re-runs on every render — pilots ref
+  // mutates in place but setTick bumps cause re-renders on join/leave/sync).
+  useEffect(() => {
+    onPilotsChange?.(pilots.size);
+  });
 
   return (
     <>
@@ -171,6 +178,7 @@ interface CityCanvasProps {
   onHover: (building: CityBuilding | null, x: number, y: number) => void;
   onClick: (building: CityBuilding) => void;
   onReady: () => void;
+  onPilotsChange?: (count: number) => void;
 }
 
 export default function CityCanvas({
@@ -181,6 +189,7 @@ export default function CityCanvas({
   onHover,
   onClick,
   onReady,
+  onPilotsChange,
 }: CityCanvasProps) {
   return (
     <Canvas
@@ -196,6 +205,7 @@ export default function CityCanvas({
         onHover={onHover}
         onClick={onClick}
         onReady={onReady}
+        onPilotsChange={onPilotsChange}
       />
     </Canvas>
   );

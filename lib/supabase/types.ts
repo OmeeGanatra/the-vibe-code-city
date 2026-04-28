@@ -25,6 +25,13 @@ export interface Database {
           last_synced_at: string | null;
           created_at: string;
           updated_at: string;
+          for_hire: boolean;
+          hire_headline: string | null;
+          hire_rate_usd_hourly: number | null;
+          hire_availability: string | null;
+          hire_contact_url: string | null;
+          hire_skills: string[];
+          hire_bio: string | null;
         };
         Insert: {
           id?: string;
@@ -49,6 +56,13 @@ export interface Database {
           last_synced_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          for_hire?: boolean;
+          hire_headline?: string | null;
+          hire_rate_usd_hourly?: number | null;
+          hire_availability?: string | null;
+          hire_contact_url?: string | null;
+          hire_skills?: string[];
+          hire_bio?: string | null;
         };
         Update: {
           id?: string;
@@ -73,6 +87,13 @@ export interface Database {
           last_synced_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          for_hire?: boolean;
+          hire_headline?: string | null;
+          hire_rate_usd_hourly?: number | null;
+          hire_availability?: string | null;
+          hire_contact_url?: string | null;
+          hire_skills?: string[];
+          hire_bio?: string | null;
         };
         Relationships: [];
       };
