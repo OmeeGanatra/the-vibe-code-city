@@ -103,12 +103,14 @@ export default function BuildingMesh({
   const scaleRef = useRef(0);
   const pointerDownPos = useRef<{ x: number; y: number } | null>(null);
 
+  const timeRef = useRef(0);
+
   // Animate rise on mount
   useFrame((_, delta) => {
     if (!groupRef.current) return;
+    timeRef.current += delta;
     if (scaleRef.current < 1) {
       scaleRef.current = Math.min(1, scaleRef.current + delta * 1.5);
-      // Cubic ease-out
       const t = scaleRef.current;
       const eased = 1 - Math.pow(1 - t, 3);
       groupRef.current.scale.y = eased;
@@ -117,6 +119,7 @@ export default function BuildingMesh({
   });
 
   const seed = hashStr(building.id);
+  const pulsePhase = (seed % 1000) / 1000 * Math.PI * 2;
 
   const { frontTex, sideTex, roofMat, bodyMats, labelTex } = useMemo(() => {
     const front = createWindowTexture(
@@ -169,6 +172,15 @@ export default function BuildingMesh({
 
   const dimmed = !!hireFilter && !isHire;
   const hiring = !!hireFilter && !!isHire;
+
+  // Subtle window pulse — each building breathes at its own phase
+  useFrame(() => {
+    if (dimmed) return;
+    const pulse = 0.55 + 0.1 * Math.sin(timeRef.current * 0.25 + pulsePhase);
+    for (const m of bodyMats) {
+      m.emissiveIntensity = pulse;
+    }
+  });
 
   useEffect(() => {
     const opacity = dimmed ? 0.08 : 1.0;
