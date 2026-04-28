@@ -39,23 +39,7 @@ export default function AdvertisePage() {
     });
 
     if (res.ok) {
-      const campaign = await res.json();
-      // Fund the campaign via Stripe
-      const fundRes = await fetch("/api/ads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "fund",
-          campaign_id: campaign.id,
-          return_url: window.location.href,
-        }),
-      });
-      const fundData = await fundRes.json();
-      if (fundData.url) {
-        window.location.href = fundData.url;
-      } else {
-        setStep("submitted");
-      }
+      setStep("submitted");
     }
   };
 
@@ -217,7 +201,7 @@ export default function AdvertisePage() {
                 type="submit"
                 className="btn-press pixel-shadow-coral bg-[#ff6b35] px-6 py-2 font-pixel text-xs text-[#0d0400]"
               >
-                CREATE & PAY →
+                SUBMIT FOR REVIEW →
               </button>
             </div>
           </form>

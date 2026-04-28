@@ -34,7 +34,6 @@ const TYPE_LABELS: Record<string, string> = {
 
 export default function ShopPage() {
   const [items, setItems] = useState<ShopItem[]>([]);
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -47,39 +46,9 @@ export default function ShopPage() {
       });
   }, []);
 
-  const toggleItem = (id: string) => {
-    setSelectedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
   const filteredItems = filter
     ? items.filter((i) => i.item_type === filter)
     : items;
-
-  const totalCents = filteredItems
-    .filter((i) => selectedItems.has(i.id))
-    .reduce((s, i) => s + i.price_cents, 0);
-
-  const handleCheckout = async () => {
-    if (selectedItems.size === 0) return;
-    // In production: use actual auth user ID
-    const res = await fetch("/api/shop", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "checkout",
-        user_id: "demo-user-id",
-        item_ids: Array.from(selectedItems),
-        return_url: window.location.href,
-      }),
-    });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
-  };
 
   const types = [...new Set(items.map((i) => i.item_type))];
 
@@ -96,8 +65,11 @@ export default function ShopPage() {
         </div>
 
         <h1 className="mb-2 font-pixel text-xl text-[#ff6b35]">SHOP</h1>
-        <p className="mb-6 font-pixel text-[10px] text-[#5a3a2a]">
+        <p className="mb-2 font-pixel text-[10px] text-[#5a3a2a]">
           Customize your building with cosmetic items
+        </p>
+        <p className="mb-6 font-pixel text-[9px] text-[#8a5a3a]">
+          PREVIEW · purchases coming soon
         </p>
 
         {/* Filter tabs */}
@@ -133,14 +105,9 @@ export default function ShopPage() {
           <>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {filteredItems.map((item) => (
-                <button
+                <div
                   key={item.id}
-                  onClick={() => toggleItem(item.id)}
-                  className={`border p-4 text-left transition-colors ${
-                    selectedItems.has(item.id)
-                      ? "border-[#ff6b35] bg-[#201008]"
-                      : "border-[#2a1a0f] bg-[#1a0a04] hover:border-[#3a2a1f]"
-                  }`}
+                  className="border border-[#2a1a0f] bg-[#1a0a04] p-4 text-left"
                 >
                   <div className="flex items-center justify-between">
                     <span
@@ -169,29 +136,9 @@ export default function ShopPage() {
                       {TYPE_LABELS[item.item_type] ?? item.item_type}
                     </span>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
-
-            {/* Checkout footer */}
-            {selectedItems.size > 0 && (
-              <div className="fixed bottom-0 left-0 right-0 border-t border-[#2a1a0f] bg-[#0d0400]/95 p-4 backdrop-blur-sm">
-                <div className="mx-auto flex max-w-4xl items-center justify-between">
-                  <div className="font-pixel text-xs text-[#8a5a3a]">
-                    {selectedItems.size} item{selectedItems.size > 1 ? "s" : ""} ·{" "}
-                    <span className="text-[#ff6b35]">
-                      ${(totalCents / 100).toFixed(2)}
-                    </span>
-                  </div>
-                  <button
-                    onClick={handleCheckout}
-                    className="btn-press pixel-shadow-coral bg-[#ff6b35] px-6 py-2 font-pixel text-xs text-[#0d0400]"
-                  >
-                    CHECKOUT →
-                  </button>
-                </div>
-              </div>
-            )}
           </>
         )}
       </div>
