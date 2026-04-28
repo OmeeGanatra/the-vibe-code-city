@@ -8,6 +8,7 @@ import * as THREE from "three";
 import CityScene from "./CityScene";
 import DroneControls from "./DroneControls";
 import RemoteDrones from "./RemoteDrones";
+import FlyingLights from "./FlyingLights";
 import { usePartyFly } from "@/lib/multiplayer";
 import type { CityBuilding } from "@/lib/projects";
 
@@ -156,6 +157,8 @@ function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, o
       {!droneMode && (
         <CameraFocus target={focusTarget} controlsRef={controlsRef as never} />
       )}
+
+      <FlyingLights />
 
       <DroneControls enabled={droneMode} onExit={onDroneExit} onMove={sendMove} />
 
