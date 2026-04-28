@@ -88,9 +88,11 @@ interface InnerProps {
   onClick: (building: CityBuilding) => void;
   onReady: () => void;
   onPilotsChange?: (count: number) => void;
+  hireFilter?: boolean;
+  hireLogins?: Set<string>;
 }
 
-function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, onClick, onReady, onPilotsChange }: InnerProps) {
+function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, onClick, onReady, onPilotsChange, hireFilter, hireLogins }: InnerProps) {
   const controlsRef = useRef<{ target: THREE.Vector3 } | null>(null);
   const readyCalled = useRef(false);
   const { pilots, sendMove } = usePartyFly(droneMode);
@@ -135,6 +137,8 @@ function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, o
         roadColor="#2a1a0f"
         onHover={onHover}
         onClick={onClick}
+        hireFilter={hireFilter}
+        hireLogins={hireLogins}
       />
 
       {!droneMode && (
@@ -179,6 +183,8 @@ interface CityCanvasProps {
   onClick: (building: CityBuilding) => void;
   onReady: () => void;
   onPilotsChange?: (count: number) => void;
+  hireFilter?: boolean;
+  hireLogins?: Set<string>;
 }
 
 export default function CityCanvas({
@@ -190,6 +196,8 @@ export default function CityCanvas({
   onClick,
   onReady,
   onPilotsChange,
+  hireFilter,
+  hireLogins,
 }: CityCanvasProps) {
   return (
     <Canvas
@@ -206,6 +214,8 @@ export default function CityCanvas({
         onClick={onClick}
         onReady={onReady}
         onPilotsChange={onPilotsChange}
+        hireFilter={hireFilter}
+        hireLogins={hireLogins}
       />
     </Canvas>
   );

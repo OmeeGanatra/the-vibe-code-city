@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import type { CityBuilding } from "@/lib/projects";
 import { generateCityLayout } from "@/lib/cityLayout";
 import projects from "@/data/projects.json";
@@ -42,6 +42,9 @@ export default function Home() {
   const [droneMode, setDroneMode] = useState(false);
   const [hireMap, setHireMap] = useState<Map<string, HireSummary>>(new Map());
   const [pilotCount, setPilotCount] = useState(0);
+  const [hireFilter, setHireFilter] = useState(false);
+
+  const hireLogins = useMemo(() => new Set(hireMap.keys()), [hireMap]);
 
   useEffect(() => {
     fetch("/api/hire")
@@ -103,6 +106,8 @@ export default function Home() {
           onClick={handleClick}
           onReady={() => setCityReady(true)}
           onPilotsChange={setPilotCount}
+          hireFilter={hireFilter}
+          hireLogins={hireLogins}
         />
       </div>
 
@@ -134,6 +139,19 @@ export default function Home() {
             Category
           </div>
           <CategoryLegend />
+          {hireMap.size > 0 && (
+            <button
+              onClick={() => setHireFilter((v) => !v)}
+              className={`mt-2 btn-press px-2 py-1 font-pixel text-[9px] border transition-colors ${
+                hireFilter
+                  ? "bg-[#7fff6b] text-[#0d0400] border-[#7fff6b]"
+                  : "bg-[#0d1f0d] text-[#7fff6b] border-[#7fff6b]/50 hover:border-[#7fff6b]"
+              }`}
+              style={{ boxShadow: "0 2px 0 #2a4a2a" }}
+            >
+              {hireFilter ? "● HIRE FILTER ON" : "○ HIRE FILTER"}
+            </button>
+          )}
         </div>
       )}
 

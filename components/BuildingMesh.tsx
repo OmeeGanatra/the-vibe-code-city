@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useCallback } from "react";
+import { useMemo, useRef, useCallback, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { CityBuilding } from "@/lib/projects";
@@ -88,12 +88,16 @@ interface BuildingMeshProps {
   building: CityBuilding;
   onHover: (building: CityBuilding | null, x: number, y: number) => void;
   onClick: (building: CityBuilding) => void;
+  isHire?: boolean;
+  hireFilter?: boolean;
 }
 
 export default function BuildingMesh({
   building,
   onHover,
   onClick,
+  isHire,
+  hireFilter,
 }: BuildingMeshProps) {
   const groupRef = useRef<THREE.Group>(null);
   const scaleRef = useRef(0);
@@ -163,6 +167,18 @@ export default function BuildingMesh({
     return { frontTex: front, sideTex: side, roofMat: roofM, bodyMats: mats, labelTex: label };
   }, [building]);
 
+  const dimmed = !!hireFilter && !isHire;
+  const hiring = !!hireFilter && !!isHire;
+
+  useEffect(() => {
+    const opacity = dimmed ? 0.08 : 1.0;
+    for (const m of bodyMats) {
+      m.transparent = dimmed;
+      m.opacity = opacity;
+      m.needsUpdate = true;
+    }
+  }, [dimmed, bodyMats]);
+
   const handlePointerDown = useCallback((e: { clientX: number; clientY: number }) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
   }, []);
@@ -228,6 +244,22 @@ export default function BuildingMesh({
       >
         <spriteMaterial map={labelTex} transparent depthTest={false} />
       </sprite>
+
+      {/* FOR HIRE glow beacon */}
+      {hiring && (
+        <>
+          <pointLight
+            position={[0, building.height / 2 + 50, 0]}
+            color="#7fff6b"
+            intensity={4}
+            distance={150}
+            decay={2}
+          />
+          <sprite position={[0, building.height / 2 + 30, 0]} scale={[12, 12, 1]}>
+            <spriteMaterial color="#7fff6b" transparent opacity={0.6} depthTest={false} />
+          </sprite>
+        </>
+      )}
     </group>
   );
 }
