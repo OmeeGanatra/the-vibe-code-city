@@ -15,12 +15,18 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
+  const cardUrl = `${process.env.NEXT_PUBLIC_URL ?? ""}/api/share-card?username=${username}`;
   return {
     title: `${username} — Vibe Code City`,
     description: `${username}'s building in Vibe Code City`,
     openGraph: {
       title: `${username} — Vibe Code City`,
       description: `Check out ${username}'s building`,
+      images: [{ url: cardUrl, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [cardUrl],
     },
   };
 }
