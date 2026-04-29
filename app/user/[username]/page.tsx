@@ -6,6 +6,7 @@ import { syncUser } from "@/lib/services/github";
 import Link from "next/link";
 import type { Metadata } from "next";
 import allProjects from "@/data/projects.json";
+import HireEditPanel from "@/components/HireEditPanel";
 
 // ── SYSTEM 3 & 13: Developer Profile with ISR ──────────────
 
@@ -192,6 +193,20 @@ export default async function UserProfilePage({ params }: Props) {
             </div>
           </div>
         )}
+
+        {/* Hire profile editor (only visible to the profile owner) */}
+        <HireEditPanel
+          profileLogin={user.github_login}
+          initial={{
+            for_hire: user.for_hire,
+            hire_headline: user.hire_headline,
+            hire_bio: user.hire_bio,
+            hire_rate_usd_hourly: user.hire_rate_usd_hourly,
+            hire_availability: user.hire_availability,
+            hire_contact_url: user.hire_contact_url,
+            hire_skills: user.hire_skills ?? [],
+          }}
+        />
 
         {/* Stats Grid */}
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
