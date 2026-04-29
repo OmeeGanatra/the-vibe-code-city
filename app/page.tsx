@@ -230,6 +230,13 @@ export default function Home() {
           >
             JOBS
           </Link>
+          <Link
+            href="/leaderboard"
+            className="btn-press inline-block border border-[#5a3a2a] bg-[#1a0a04] px-4 py-2 font-pixel text-xs text-[#8a5a3a] transition-colors hover:border-[#ff6b35] hover:text-[#ff6b35]"
+            style={{ boxShadow: "0 4px 0 #1a0a04" }}
+          >
+            TOP
+          </Link>
           <button
             onClick={handleDroneToggle}
             className="btn-press pixel-shadow-coral bg-[#1a0a04] border border-[#ff6b35] px-4 py-2 font-pixel text-xs text-[#ff6b35] hover:bg-[#ff6b35] hover:text-[#0d0400] transition-colors"
