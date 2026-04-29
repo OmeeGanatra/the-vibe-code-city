@@ -31,17 +31,25 @@ firebase.json         Hosting + frameworksBackend config
 
 | File | Purpose |
 |------|---------|
-| [app/page.tsx](app/page.tsx) | Main 3D city — entry point |
-| [components/CityCanvas.tsx](components/CityCanvas.tsx) | Three.js scene: lighting, fog, sky, post-FX |
-| [components/BuildingMesh.tsx](components/BuildingMesh.tsx) | Per-building mesh + procedural windows |
+| [app/page.tsx](app/page.tsx) | Main 3D city — entry point, hireMap, pilotCount, filter state |
+| [components/CityCanvas.tsx](components/CityCanvas.tsx) | Three.js scene: lighting, fog, sky, post-FX, PartyKit |
+| [components/BuildingMesh.tsx](components/BuildingMesh.tsx) | Per-building mesh + procedural windows + hover sway + pulse |
+| [components/FlyingLights.tsx](components/FlyingLights.tsx) | 30 instanced glowing particles drifting upward (visual life) |
 | [components/DroneControls.tsx](components/DroneControls.tsx) | First-person flight (WASD + pointer-lock) |
+| [components/SignInButton.tsx](components/SignInButton.tsx) | GitHub OAuth sign-in/sign-out in HUD |
+| [components/HireEditPanel.tsx](components/HireEditPanel.tsx) | Inline hire profile editor (owner-only, client component) |
+| [components/ProjectPanel.tsx](components/ProjectPanel.tsx) | Building sidebar: project info, hire CTA, builder profile link |
+| [components/HoverTooltip.tsx](components/HoverTooltip.tsx) | Name + upvotes + @login + FOR HIRE badge on hover |
 | [lib/cityLayout.ts](lib/cityLayout.ts) | Spiral placement, height-from-upvotes, recency lighting |
 | [lib/projects.ts](lib/projects.ts) | `Project` and `CityBuilding` types + category color map |
 | [lib/services/github.ts](lib/services/github.ts) | GitHub API client + Supabase sync + 24h cache |
-| [lib/services/achievements.ts](lib/services/achievements.ts) | Achievement evaluation logic |
 | [lib/services/building-generator.ts](lib/services/building-generator.ts) | Procedural building params from user GitHub stats |
 | [lib/supabase/server.ts](lib/supabase/server.ts) | `createServerSupabase` (cookie-based) and `createServiceSupabase` (service role) |
-| [supabase/migrations/001_initial_schema.sql](supabase/migrations/001_initial_schema.sql) | Full schema: 12 tables, 20 achievements, 16 cosmetic items |
+| [supabase/migrations/001_initial_schema.sql](supabase/migrations/001_initial_schema.sql) | Base schema: users, repos, achievements, kudos, shop, ads |
+| [supabase/migrations/002_for_hire_fields.sql](supabase/migrations/002_for_hire_fields.sql) | Hire columns on users: for_hire, headline, rate, skills, etc. |
+| [supabase/migrations/003_jobs_board.sql](supabase/migrations/003_jobs_board.sql) | Jobs table with RLS |
+| [party/fly.ts](party/fly.ts) | PartyKit server — real-time pilot positions |
+| [lib/multiplayer.ts](lib/multiplayer.ts) | `usePartyFly` hook — connects PartyKit WebSocket |
 
 ## Code conventions
 
@@ -105,24 +113,33 @@ If reviving payments, prefer **Razorpay** (UPI / India-friendly) or **NOWPayment
 ## What's wired vs not
 
 **Working in production**:
-- 3D city homepage with 80+ buildings from `data/projects.json`
-- Drone first-person mode
+- 3D city homepage with 80+ buildings, FOR HIRE city filter, flying lights, window pulse, hover sway
+- Drone first-person mode with real-time multiplayer via PartyKit (`vibe-code-city.omeeganatra.partykit.dev`)
 - Project submission via Discord webhook (no-ops if `DISCORD_WEBHOOK_URL` unset)
 - GitHub user sync (lazy, 24h cache) via `/api/user`
 - All Supabase-backed APIs (`/api/shop`, `/api/achievements`, `/api/kudos`, `/api/building`, `/api/share`, `/api/dailies`)
-- User profile page `/user/[username]`
+- **Jobs board**: `/jobs` (browse) + `/jobs/post` + `GET|POST /api/jobs`
+- **For-hire directory**: `/hire` + `GET /api/hire` (list) + `PATCH /api/hire` (authenticated edit)
+- **GitHub OAuth scaffolded**: `SignInButton` + `/api/auth/callback` (claims profile, redirects to `/user/<login>`)
+- **Hire profile editing**: `HireEditPanel` on `/user/[username]` — owner-only, saves via `PATCH /api/hire`
+- **Share cards**: `GET /api/share-card?username=...` — edge runtime, `next/og`, OG metadata wired on profile pages
+- User profile page `/user/[username]` — stats, achievements, kudos, vibe projects, claim banner, compare form
 - Compare page `/compare/[u1]/[u2]`
+- `sitemap.xml` and `robots.txt` generated statically
 
-**Stubbed / not yet wired**:
-- GitHub OAuth in Supabase Auth (needed for `auth.uid()`-based RLS writes — kudos, shop equip, etc.)
-- `/api/sync` cron job (no scheduler set up; users sync lazily)
-- Discord webhook URL (optional)
+**Needs manual setup to activate**:
+- **GitHub OAuth**: user must create a GitHub OAuth app → enable GitHub provider in Supabase Auth dashboard
+- `/api/sync` cron job (no scheduler — users sync lazily on profile visit)
+- Discord webhook URL (optional, for `/submit` notifications)
+
+**Dormant / not wired**:
 - Payment provider (see "Payments" above)
+- Shop checkout and ad funding (UI removed, backend code intact)
 
 ## Things to do, ranked by impact
 
-1. **Real-time multiplayer drones** via PartyKit — see other people flying around in the city (inspired by srizzon/git-city)
-2. **Instanced building rendering** — Three.js `InstancedMesh` so we can scale past ~1k buildings
-3. **GitHub OAuth + claim-your-building flow** — let users claim a project building or submit a personal building
-4. **Server-side share cards** with `@napi-rs/canvas` — generate downloadable PNGs of profile + building
-5. **Razorpay or NOWPayments** integration to revive shop checkout
+1. **Instanced building rendering** — Three.js `InstancedMesh` to scale past ~1k buildings (risky: unique window textures must be baked into texture atlas)
+2. **Razorpay / NOWPayments** — revive shop checkout with India-compatible provider
+3. **Kudos send button** on profile pages — requires resolving `users.id` from GitHub login after sign-in
+4. **`/api/sync` cron** — set up a Cloud Scheduler job hitting `/api/sync?secret=<CRON_SECRET>` daily
+5. **Activity feed page** — `/api/kudos?feed=true` already returns a feed, just needs a UI
