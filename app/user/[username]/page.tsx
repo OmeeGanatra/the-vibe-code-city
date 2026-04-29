@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import allProjects from "@/data/projects.json";
 import HireEditPanel from "@/components/HireEditPanel";
 import ClaimButton from "@/components/ClaimButton";
+import CompareForm from "@/components/CompareForm";
 
 // ── SYSTEM 3 & 13: Developer Profile with ISR ──────────────
 
@@ -415,6 +416,13 @@ export default async function UserProfilePage({ params }: Props) {
             </div>
           </div>
         )}
+        {/* Compare with another builder */}
+        <div className="mt-6 border-t border-[#2a1a0f] pt-4">
+          <div className="mb-1 font-pixel text-[9px] uppercase text-[#3a2a1f]">
+            Compare buildings
+          </div>
+          <CompareForm username={user.github_login} />
+        </div>
       </div>
     </main>
   );
