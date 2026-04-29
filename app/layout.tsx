@@ -6,10 +6,19 @@ export const metadata: Metadata = {
   title: "The Vibe Code City — Where Vibe Coders Build",
   description:
     "A 3D pixel art city where every building is a project built with Claude. Explore the community, discover what people are shipping, and add your own.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_URL ?? "https://thevibecodecity-73598.web.app"
+  ),
   openGraph: {
     title: "The Vibe Code City",
-    description: "A 3D pixel art city of Claude-built projects",
+    description: "A 3D pixel art city of Claude-built projects. Browse the community, hire vibe coders, post jobs.",
     type: "website",
+    siteName: "Vibe Code City",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Vibe Code City",
+    description: "A 3D pixel art city of Claude-built projects",
   },
 };
 
