@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
+import Link from "next/link";
 import type { CityBuilding } from "@/lib/projects";
 import { CATEGORY_COLORS } from "@/lib/projects";
+
+function extractLogin(url: string | undefined): string | null {
+  return url?.match(/github\.com\/([^/?#]+)/i)?.[1] ?? null;
+}
 
 interface HireSummary {
   github_login: string;
@@ -185,6 +190,14 @@ export default function ProjectPanel({ building, onClose, hireSummary }: Project
                 >
                   → GITHUB REPO
                 </a>
+              )}
+              {extractLogin(project.githubUrl) && (
+                <Link
+                  href={`/user/${extractLogin(project.githubUrl)}`}
+                  className="block border border-[#2a1a0f] px-4 py-2 text-center font-pixel text-xs text-[#8a5a3a] transition-colors hover:border-[#ffd166] hover:text-[#ffd166]"
+                >
+                  → BUILDER PROFILE
+                </Link>
               )}
             </div>
           </div>
