@@ -122,6 +122,16 @@ export default async function HirePage() {
                   </div>
                 )}
 
+                {/* GitHub stats */}
+                <div className="mb-3 flex gap-3 font-pixel text-[9px] text-[#3a2a1f]">
+                  {coder.total_contributions > 0 && (
+                    <span>{coder.total_contributions.toLocaleString()} commits</span>
+                  )}
+                  {coder.total_stars > 0 && (
+                    <span>★ {coder.total_stars.toLocaleString()}</span>
+                  )}
+                </div>
+
                 {/* Bottom row: availability + view profile */}
                 <div className="flex items-center justify-between border-t border-[#2a4a2a] pt-3">
                   {coder.hire_availability && (
@@ -139,11 +149,17 @@ export default async function HirePage() {
         )}
 
         {/* Self-listing CTA */}
-        <div className="mt-8 border-t border-[#2a1a0f] pt-6">
+        <div className="mt-8 border-t border-[#2a1a0f] pt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-pixel text-[10px] text-[#5a3a2a]">
-            Want to be listed? Sign in with GitHub (coming soon) and toggle{" "}
-            <span className="text-[#7fff6b]">FOR HIRE</span> on your profile.
+            Want to be listed? Sign in with GitHub on your profile page and toggle{" "}
+            <span className="text-[#7fff6b]">FOR HIRE</span>.
           </p>
+          <Link
+            href="/jobs"
+            className="font-pixel text-[10px] text-[#ffd166] hover:underline shrink-0"
+          >
+            Browse open jobs →
+          </Link>
         </div>
       </div>
     </main>
