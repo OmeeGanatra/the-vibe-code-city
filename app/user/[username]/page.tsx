@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import allProjects from "@/data/projects.json";
 import HireEditPanel from "@/components/HireEditPanel";
+import ClaimButton from "@/components/ClaimButton";
 
 // ── SYSTEM 3 & 13: Developer Profile with ISR ──────────────
 
@@ -191,6 +192,16 @@ export default async function UserProfilePage({ params }: Props) {
                 </a>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Claim banner for unclaimed profiles */}
+        {!user.claimed && (
+          <div className="mt-4 flex items-center justify-between border border-[#ff6b35]/40 bg-[#1a0a04] px-4 py-3">
+            <p className="font-pixel text-[10px] leading-relaxed text-[#8a5a3a]">
+              This building is unclaimed. Sign in with GitHub to claim it and set up your hire profile.
+            </p>
+            <ClaimButton username={user.github_login} />
           </div>
         )}
 

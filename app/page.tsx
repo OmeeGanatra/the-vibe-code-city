@@ -125,7 +125,10 @@ export default function Home() {
             VIBE CODE CITY
           </div>
           <div className="font-pixel text-[9px] text-[#5a3a2a]">
-            {buildings.length} projects · built by vibe coders
+            {buildings.length} projects
+            {hireMap.size > 0 && (
+              <span className="text-[#5a8a5a]"> · {hireMap.size} for hire</span>
+            )}
           </div>
         </div>
       )}
