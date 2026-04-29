@@ -154,12 +154,14 @@ export default async function HirePage() {
             Want to be listed? Sign in with GitHub on your profile page and toggle{" "}
             <span className="text-[#7fff6b]">FOR HIRE</span>.
           </p>
-          <Link
-            href="/jobs"
-            className="font-pixel text-[10px] text-[#ffd166] hover:underline shrink-0"
-          >
-            Browse open jobs →
-          </Link>
+          <div className="flex gap-3 shrink-0">
+            <Link href="/jobs" className="font-pixel text-[10px] text-[#ffd166] hover:underline">
+              Browse open jobs →
+            </Link>
+            <Link href="/leaderboard" className="font-pixel text-[10px] text-[#8a5a3a] hover:underline">
+              Leaderboard →
+            </Link>
+          </div>
         </div>
       </div>
     </main>

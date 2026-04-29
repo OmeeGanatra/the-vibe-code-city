@@ -157,13 +157,14 @@ export default async function JobsPage() {
           </div>
         )}
 
-        <div className="mt-8 border-t border-[#2a1a0f] pt-6">
+        <div className="mt-8 flex flex-col gap-1 border-t border-[#2a1a0f] pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-pixel text-[10px] text-[#5a3a2a]">
             Looking for vibe coders directly?{" "}
-            <Link href="/hire" className="text-[#7fff6b] hover:underline">
-              Browse the hire directory →
-            </Link>
+            <Link href="/hire" className="text-[#7fff6b] hover:underline">Browse the hire directory →</Link>
           </p>
+          <Link href="/leaderboard" className="font-pixel text-[10px] text-[#5a3a2a] hover:text-[#ffd166]">
+            Leaderboard →
+          </Link>
         </div>
       </div>
     </main>
