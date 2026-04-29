@@ -166,9 +166,9 @@ function InnerScene({ buildings, focusTarget, droneMode, onDroneExit, onHover, o
 
       <EffectComposer>
         <Bloom
-          intensity={0.35}
-          luminanceThreshold={0.6}
-          luminanceSmoothing={0.025}
+          intensity={1.2}
+          luminanceThreshold={0.5}
+          luminanceSmoothing={0.05}
         />
       </EffectComposer>
     </>

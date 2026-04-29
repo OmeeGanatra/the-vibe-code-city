@@ -181,7 +181,7 @@ export default function BuildingMesh({
   // Subtle window pulse — each building breathes at its own phase
   useFrame(() => {
     if (dimmed) return;
-    const pulse = 0.55 + 0.1 * Math.sin(timeRef.current * 0.25 + pulsePhase);
+    const pulse = 0.3 + 0.6 * (Math.sin(timeRef.current * 1.2 + pulsePhase) * 0.5 + 0.5);
     for (const m of bodyMats) {
       m.emissiveIntensity = pulse;
     }
