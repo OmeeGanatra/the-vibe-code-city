@@ -102,10 +102,10 @@ export default function BuildingMesh({
   const groupRef = useRef<THREE.Group>(null);
   const scaleRef = useRef(0);
   const pointerDownPos = useRef<{ x: number; y: number } | null>(null);
-
+  const isHoveredRef = useRef(false);
   const timeRef = useRef(0);
 
-  // Animate rise on mount
+  // Animate rise on mount + hover sway
   useFrame((_, delta) => {
     if (!groupRef.current) return;
     timeRef.current += delta;
@@ -115,6 +115,11 @@ export default function BuildingMesh({
       const eased = 1 - Math.pow(1 - t, 3);
       groupRef.current.scale.y = eased;
       groupRef.current.position.y = -(1 - eased) * building.height * 0.5;
+    }
+    if (isHoveredRef.current) {
+      groupRef.current.rotation.y = Math.sin(timeRef.current * 2.5) * 0.035;
+    } else {
+      groupRef.current.rotation.y *= 0.88;
     }
   });
 
@@ -210,6 +215,7 @@ export default function BuildingMesh({
   const handlePointerEnter = useCallback(
     (e: { clientX: number; clientY: number; stopPropagation: () => void }) => {
       e.stopPropagation();
+      isHoveredRef.current = true;
       document.body.style.cursor = "pointer";
       onHover(building, e.clientX, e.clientY);
     },
@@ -217,6 +223,7 @@ export default function BuildingMesh({
   );
 
   const handlePointerLeave = useCallback(() => {
+    isHoveredRef.current = false;
     document.body.style.cursor = "auto";
     onHover(null, 0, 0);
   }, [onHover]);
